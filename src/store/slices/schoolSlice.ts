@@ -9,24 +9,20 @@ interface SchoolState {
 }
 
 const initialState: SchoolState = {
-  schools: [], // Xóa mock data, bắt đầu với mảng rỗng
+  schools: [], 
   loading: false,
   error: null,
 };
 
-// --- CÁC ASYNC THUNKS ---
-
-// Lấy danh sách trường
 export const fetchSchools = createAsyncThunk('school/fetchSchools', async (_, { rejectWithValue }) => {
   try {
     const response = await api.get('/schools');
-    return response.data; // Giả sử API trả về mảng trực tiếp trong data
+    return response.data; 
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || 'Lỗi khi tải dữ liệu');
   }
 });
 
-// Thêm trường mới
 export const createSchool = createAsyncThunk('school/createSchool', async (newSchool: Omit<School, 'id'>, { rejectWithValue }) => {
   try {
     const response = await api.post('/schools', newSchool);
@@ -36,7 +32,6 @@ export const createSchool = createAsyncThunk('school/createSchool', async (newSc
   }
 });
 
-// Cập nhật trường
 export const updateSchoolAsync = createAsyncThunk('school/updateSchool', async (school: School, { rejectWithValue }) => {
   try {
     const response = await api.put(`/schools/${school.id}`, school);
@@ -46,7 +41,6 @@ export const updateSchoolAsync = createAsyncThunk('school/updateSchool', async (
   }
 });
 
-// Xóa trường
 export const deleteSchoolAsync = createAsyncThunk('school/deleteSchool', async (id: string, { rejectWithValue }) => {
   try {
     await api.delete(`/schools/${id}`);
@@ -56,14 +50,12 @@ export const deleteSchoolAsync = createAsyncThunk('school/deleteSchool', async (
   }
 });
 
-// --- SLICE CONFIG ---
 const schoolSlice = createSlice({
   name: 'school',
   initialState,
-  reducers: {}, // Không dùng reducers đồng bộ nữa
+  reducers: {}, 
   extraReducers: (builder) => {
     builder
-      // Xử lý fetchSchools
       .addCase(fetchSchools.pending, (state) => { state.loading = true; state.error = null; })
       .addCase(fetchSchools.fulfilled, (state, action: PayloadAction<School[]>) => {
         state.loading = false;
@@ -73,18 +65,15 @@ const schoolSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Xử lý createSchool
       .addCase(createSchool.fulfilled, (state, action: PayloadAction<School>) => {
         state.schools.push(action.payload);
       })
-      // Xử lý updateSchool
       .addCase(updateSchoolAsync.fulfilled, (state, action: PayloadAction<School>) => {
         const index = state.schools.findIndex((s) => s.id === action.payload.id);
         if (index !== -1) {
           state.schools[index] = action.payload;
         }
       })
-      // Xử lý deleteSchool
       .addCase(deleteSchoolAsync.fulfilled, (state, action: PayloadAction<string>) => {
         state.schools = state.schools.filter((s) => s.id !== action.payload);
       });

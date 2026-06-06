@@ -35,7 +35,6 @@ const AdmissionBlockManagement: React.FC = () => {
         const major = majors.find(m => m.id === record.majorId);
         if (!major) return 'Không xác định';
         
-        // Tìm thêm tên trường để hiển thị cho rõ ràng
         const school = schools.find(s => s.id === major.schoolId);
         return `${major.name} - ${school ? school.code : ''}`;
       }

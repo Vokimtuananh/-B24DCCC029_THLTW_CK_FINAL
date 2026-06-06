@@ -47,7 +47,6 @@ const SchoolManagement: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    // Gọi thunk và dùng unwrap() để có thể hứng lỗi (nếu có)
     dispatch(deleteSchoolAsync(id))
       .unwrap()
       .then(() => {
@@ -61,7 +60,6 @@ const SchoolManagement: React.FC = () => {
   const handleModalOk = () => {
     form.validateFields().then(values => {
       if (editingId) {
-        // Cập nhật API
         dispatch(updateSchoolAsync({ id: editingId, ...values }))
           .unwrap()
           .then(() => {
@@ -70,7 +68,6 @@ const SchoolManagement: React.FC = () => {
           })
           .catch((err) => message.error(err));
       } else {
-        // Thêm mới API (không cần tự tạo ID giả nữa)
         dispatch(createSchool(values))
           .unwrap()
           .then(() => {
@@ -99,7 +96,7 @@ const SchoolManagement: React.FC = () => {
         onCancel={() => setIsModalOpen(false)}
         okText="Lưu"
         cancelText="Hủy"
-        confirmLoading={loading} // Hiển thị trạng thái loading trên nút Lưu
+        confirmLoading={loading}
       >
         <Form form={form} layout="vertical">
           <Form.Item name="code" label="Mã trường" rules={[{ required: true, message: 'Vui lòng nhập mã trường!' }]}>

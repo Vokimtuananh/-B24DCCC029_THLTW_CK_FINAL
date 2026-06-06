@@ -10,19 +10,16 @@ const MajorManagement: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   
-  // Lấy dữ liệu ngành và trường từ Redux Store
   const majors = useAppSelector((state) => state.major.majors);
   const schools = useAppSelector((state) => state.school.schools);
   const dispatch = useAppDispatch();
 
-  // Định nghĩa các cột cho bảng
   const columns: ColumnsType<Major> = [
     { title: 'Mã ngành', dataIndex: 'code', key: 'code', width: '15%' },
     { title: 'Tên ngành', dataIndex: 'name', key: 'name' },
     { 
       title: 'Trường trực thuộc', 
       key: 'school',
-      // Hàm render này lấy ID trường để tìm và hiển thị Tên trường tương ứng
       render: (_, record) => {
         const school = schools.find(s => s.id === record.schoolId);
         return school ? school.name : 'Không xác định';

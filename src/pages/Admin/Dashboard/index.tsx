@@ -8,16 +8,14 @@ import { fetchSchools } from '../../../store/slices/schoolSlice';
 const Dashboard: React.FC = () => {
   const dispatch = useAppDispatch();
   
-  // Lấy dữ liệu từ Store
   const { schools, loading: schoolLoading } = useAppSelector(state => state.school);
-  // Giả lập state majors và applications (Bạn sẽ thay bằng useAppSelector thực tế)
   const majors = []; 
   const applications = [
     { id: '1', schoolId: '1', status: 'pending' },
     { id: '2', schoolId: '1', status: 'approved' },
     { id: '3', schoolId: '2', status: 'rejected' },
   ];
-  const loading = schoolLoading; // Kết hợp nhiều loading state nếu cần
+  const loading = schoolLoading;
 
   useEffect(() => {
     dispatch(fetchSchools());
@@ -25,9 +23,6 @@ const Dashboard: React.FC = () => {
     // dispatch(fetchApplications());
   }, [dispatch]);
 
-  // --- XỬ LÝ DỮ LIỆU CHO BIỂU ĐỒ ---
-
-  // 1. Dữ liệu biểu đồ cột: Đếm số lượng hồ sơ theo từng trường
   const schoolNames = schools.map(s => s.code);
   const applicationCountsBySchool = schools.map(school => {
     return applications.filter(app => app.schoolId === school.id).length;
@@ -49,7 +44,6 @@ const Dashboard: React.FC = () => {
     }]
   };
 
-  // 2. Dữ liệu biểu đồ tròn: Đếm số lượng hồ sơ theo trạng thái
   const pendingCount = applications.filter(app => app.status === 'pending').length;
   const approvedCount = applications.filter(app => app.status === 'approved').length;
   const rejectedCount = applications.filter(app => app.status === 'rejected').length;
