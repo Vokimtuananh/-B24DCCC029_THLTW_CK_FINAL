@@ -1,122 +1,61 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Layout, Menu, Typography } from 'antd';
+import {
+  DashboardOutlined,
+  BankOutlined,
+  BookOutlined,
+  AppstoreOutlined,
+} from '@ant-design/icons';
 
-function App() {
-  const [count, setCount] = useState(0)
+// Import các trang (Chúng ta sẽ tạo ở bước sau)
+import Dashboard from './pages/Admin/Dashboard';
+import SchoolManagement from './pages/Admin/School';
+
+const { Header, Content, Sider } = Layout;
+const { Title } = Typography;
+
+const App: React.FC = () => {
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <Router>
+      <Layout style={{ minHeight: '100vh' }}>
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+          <div style={{ height: 32, margin: 16, background: 'rgba(255, 255, 255, 0.2)', borderRadius: 6 }} />
+          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+            <Menu.Item key="1" icon={<DashboardOutlined />}>
+              <Link to="/">"Dashboard"</Link>
+            </Menu.Item>
+            <Menu.Item key="2" icon={<BankOutlined />}>
+              <Link to="/schools">"Quản lý Trường"</Link>
+            </Menu.Item>
+            <Menu.Item key="3" icon={<BookOutlined />}>
+              <Link to="/majors">"Quản lý Ngành"</Link>
+            </Menu.Item>
+            <Menu.Item key="4" icon={<AppstoreOutlined />}>
+              <Link to="/admission-blocks">"Quản lý Tổ hợp"</Link>
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Layout className="site-layout">
+          <Header style={{ padding: 0, background: '#fff', textAlign: 'center' }}>
+            <Title level={3} style={{ margin: '14px 0' }}>Hệ thống Quản lý Tuyển sinh</Title>
+          </Header>
+          <Content style={{ margin: '0 16px' }}>
+            <div style={{ padding: 24, minHeight: 360, marginTop: 16, background: '#fff' }}>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/schools" element={<SchoolManagement />} />
+                <Route path="/majors" element={<div>Đang phát triển "Quản lý Ngành"...</div>} />
+                <Route path="/admission-blocks" element={<div>Đang phát triển "Quản lý Tổ hợp"...</div>} />
+              </Routes>
+            </div>
+          </Content>
+        </Layout>
+      </Layout>
+    </Router>
+  );
+};
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
-}
-
-export default App
+export default App;
