@@ -1382,4 +1382,271 @@ router.get('/applications/export/csv', async (req: Request, res: Response) => {
   }
 });
 
+// SEED DATA (development only)
+router.post('/seed-data', async (req: Request, res: Response) => {
+  try {
+    // Clear existing data
+    await School.deleteMany({});
+    await Major.deleteMany({});
+    await AdmissionBlock.deleteMany({});
+    await Application.deleteMany({});
+    await User.deleteMany({});
+
+    // Create admin user
+    const hashedPassword = await bcrypt.hash('admin123', 10);
+    const adminUser = await User.create({
+      username: 'admin',
+      email: 'admin@admission.vn',
+      hashedPassword,
+      fullName: 'Admin User',
+      role: 'admin',
+      isActive: true
+    });
+
+    // Seed schools
+    const schools = await School.insertMany([
+      {
+        code: 'PTIT',
+        name: 'Học viện Công nghệ Bưu chính Viễn thông',
+        description: 'Trường đại học công lập',
+        address: 'Km 20 Đại lộ Thăng Long, Hà Nội',
+        phone: '0243.785.6789',
+        email: 'info@ptit.edu.vn',
+        website: 'https://ptit.edu.vn',
+        isActive: true
+      },
+      {
+        code: 'HUST',
+        name: 'Đại học Bách khoa Hà Nội',
+        description: 'Trường đại học kỹ thuật hàng đầu',
+        address: 'Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội',
+        phone: '0243.860.3000',
+        email: 'info@hust.edu.vn',
+        website: 'https://hust.edu.vn',
+        isActive: true
+      }
+    ]);
+
+    // Seed majors
+    const majors = await Major.insertMany([
+      {
+        schoolId: schools[0]._id,
+        code: 'IT',
+        name: 'Công nghệ Thông tin',
+        description: 'Chuyên ngành công nghệ thông tin',
+        tuitionPerSemester: 1500000,
+        duration: 4,
+        studyForm: 'fulltime',
+        isActive: true
+      },
+      {
+        schoolId: schools[0]._id,
+        code: 'CS',
+        name: 'Khoa học Máy tính',
+        description: 'Chuyên ngành khoa học máy tính',
+        tuitionPerSemester: 1500000,
+        duration: 4,
+        studyForm: 'fulltime',
+        isActive: true
+      },
+      {
+        schoolId: schools[1]._id,
+        code: 'EE',
+        name: 'Kỹ thuật Điện',
+        description: 'Chuyên ngành kỹ thuật điện',
+        tuitionPerSemester: 1400000,
+        duration: 4,
+        studyForm: 'fulltime',
+        isActive: true
+      }
+    ]);
+
+    // Seed admission blocks
+    const blocks = await AdmissionBlock.insertMany([
+      {
+        majorId: majors[0]._id,
+        code: 'A',
+        name: 'Khối A',
+        subjects: ['Toán', 'Lý', 'Hóa'],
+        description: 'Khối thi gồm Toán, Lý, Hóa học',
+        year: new Date().getFullYear(),
+        isActive: true
+      },
+      {
+        majorId: majors[1]._id,
+        code: 'B',
+        name: 'Khối B',
+        subjects: ['Toán', 'Hóa', 'Sinh'],
+        description: 'Khối thi gồm Toán, Hóa học, Sinh học',
+        year: new Date().getFullYear(),
+        isActive: true
+      }
+    ]);
+
+    // Seed applications
+    const applications = await Application.insertMany([
+      {
+        applicationNumber: 'APP-001',
+        schoolId: schools[0]._id,
+        majorId: majors[0]._id,
+        admissionBlockId: blocks[0]._id,
+        personalInfo: {
+          fullName: 'Nguyễn Văn A',
+          dateOfBirth: new Date('2004-01-15'),
+          gender: 'M',
+          email: 'nguyenvana@email.com',
+          phoneNumber: '0901234567',
+          address: 'Hà Nội'
+        },
+        academicInfo: {
+          highSchoolName: 'THPT Chuyên Hà Nội - Amsterdam',
+          graduationYear: 2024,
+          gpa: 9.5,
+          mathScore: 9.0,
+          physicsScore: 8.5,
+          chemistryScore: 9.0
+        },
+        admissionResult: {
+          status: 'pending',
+          totalScore: 8.83
+        },
+        processStatus: 'submitted',
+        completionPercentage: 100,
+        isActive: true
+      },
+      {
+        applicationNumber: 'APP-002',
+        schoolId: schools[0]._id,
+        majorId: majors[1]._id,
+        admissionBlockId: blocks[1]._id,
+        personalInfo: {
+          fullName: 'Trần Thị B',
+          dateOfBirth: new Date('2004-03-20'),
+          gender: 'F',
+          email: 'tranthib@email.com',
+          phoneNumber: '0912345678',
+          address: 'Hà Nội'
+        },
+        academicInfo: {
+          highSchoolName: 'THPT Nguyễn Huệ',
+          graduationYear: 2024,
+          gpa: 8.8,
+          mathScore: 8.5,
+          physicsScore: 8.0,
+          chemistryScore: 9.5
+        },
+        admissionResult: {
+          status: 'pending',
+          totalScore: 8.67
+        },
+        processStatus: 'submitted',
+        completionPercentage: 100,
+        isActive: true
+      },
+      {
+        applicationNumber: 'APP-003',
+        schoolId: schools[1]._id,
+        majorId: majors[2]._id,
+        admissionBlockId: blocks[0]._id,
+        personalInfo: {
+          fullName: 'Lê Văn C',
+          dateOfBirth: new Date('2005-05-10'),
+          gender: 'M',
+          email: 'levanc@email.com',
+          phoneNumber: '0923456789',
+          address: 'Hà Nội'
+        },
+        academicInfo: {
+          highSchoolName: 'THPT Phan Bội Châu',
+          graduationYear: 2024,
+          gpa: 8.2,
+          mathScore: 8.0,
+          physicsScore: 8.5,
+          chemistryScore: 7.8
+        },
+        admissionResult: {
+          status: 'accepted',
+          totalScore: 8.1
+        },
+        processStatus: 'completed',
+        completionPercentage: 100,
+        isActive: true
+      },
+      {
+        applicationNumber: 'APP-004',
+        schoolId: schools[0]._id,
+        majorId: majors[0]._id,
+        admissionBlockId: blocks[0]._id,
+        personalInfo: {
+          fullName: 'Phạm Thị D',
+          dateOfBirth: new Date('2004-07-25'),
+          gender: 'F',
+          email: 'phamthid@email.com',
+          phoneNumber: '0934567890',
+          address: 'Hà Nội'
+        },
+        academicInfo: {
+          highSchoolName: 'THPT Lê Quý Đôn',
+          graduationYear: 2024,
+          gpa: 9.0,
+          mathScore: 9.5,
+          physicsScore: 9.0,
+          chemistryScore: 8.5
+        },
+        admissionResult: {
+          status: 'accepted',
+          totalScore: 9.0
+        },
+        processStatus: 'completed',
+        completionPercentage: 100,
+        isActive: true
+      },
+      {
+        applicationNumber: 'APP-005',
+        schoolId: schools[1]._id,
+        majorId: majors[2]._id,
+        admissionBlockId: blocks[1]._id,
+        personalInfo: {
+          fullName: 'Đỗ Văn E',
+          dateOfBirth: new Date('2005-09-08'),
+          gender: 'M',
+          email: 'dovane@email.com',
+          phoneNumber: '0945678901',
+          address: 'Hà Nội'
+        },
+        academicInfo: {
+          highSchoolName: 'THPT Kim Liên',
+          graduationYear: 2024,
+          gpa: 7.5,
+          mathScore: 7.0,
+          physicsScore: 7.5,
+          chemistryScore: 7.8
+        },
+        admissionResult: {
+          status: 'rejected',
+          totalScore: 7.43
+        },
+        processStatus: 'completed',
+        completionPercentage: 100,
+        isActive: true
+      }
+    ]);
+
+    res.json({
+      message: 'Seed data thành công',
+      data: {
+        admin: adminUser.email,
+        password: 'admin123',
+        schools: schools.length,
+        majors: majors.length,
+        blocks: blocks.length,
+        applications: applications.length
+      }
+    });
+  } catch (error) {
+    console.error('Seed error:', error);
+    res.status(500).json({ error: 'Lỗi khi seed dữ liệu', details: (error as any).message });
+  }
+});
+
 export default router;

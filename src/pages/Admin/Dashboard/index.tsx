@@ -3,29 +3,38 @@ import ReactECharts from 'echarts-for-react';
 import { Row, Col, Card, Statistic, Spin } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { fetchSchools } from '../../../store/slices/schoolSlice';
-// Import thêm fetchMajors, fetchApplications sau khi bạn tạo xong slice cho chúng
+import { fetchApplications } from '../../../store/slices/applicationSlice';
 
 const Dashboard: React.FC = () => {
   const dispatch = useAppDispatch();
-  
+
   const { schools, loading: schoolLoading } = useAppSelector(state => state.school);
-  const majors = []; 
-  const applications = [
-    { id: '1', schoolId: '1', status: 'pending' },
-    { id: '2', schoolId: '1', status: 'approved' },
-    { id: '3', schoolId: '2', status: 'rejected' },
-  ];
-  const loading = schoolLoading;
+  const { majors } = useAppSelector(state => state.major);
+  const { applications, loading: applicationLoading } = useAppSelector(state => state.application);
+
+  const loading = schoolLoading || applicationLoading;
 
   useEffect(() => {
     dispatch(fetchSchools());
-    // dispatch(fetchMajors());
-    // dispatch(fetchApplications());
+    dispatch(fetchApplications({ page: 1, limit: 1000 }));
   }, [dispatch]);
 
-  const schoolNames = schools.map(s => s.code);
+  const schoolNames = schools.map(s => s.code || s.name || s.id || s._id);
+  const applicationRecords = Array.isArray(applications) ? applications : [];
+
+  const normalizeId = (value: any) => {
+    if (!value) return null;
+    if (typeof value === 'string') return value;
+    if (typeof value === 'object') return value._id || value.id || value.toString();
+    return String(value);
+  };
+
+  const applicationSchoolId = (app: any) => normalizeId(app.schoolId);
+  const schoolKey = (school: any) => normalizeId(school.id || school._id);
+
   const applicationCountsBySchool = schools.map(school => {
-    return applications.filter(app => app.schoolId === school.id).length;
+    const schoolId = schoolKey(school);
+    return applicationRecords.filter(app => applicationSchoolId(app) === schoolId).length;
   });
 
   const barChartOption = {
@@ -44,9 +53,9 @@ const Dashboard: React.FC = () => {
     }]
   };
 
-  const pendingCount = applications.filter(app => app.status === 'pending').length;
-  const approvedCount = applications.filter(app => app.status === 'approved').length;
-  const rejectedCount = applications.filter(app => app.status === 'rejected').length;
+  const pendingCount = applicationRecords.filter(app => app.admissionResult?.status === 'pending').length;
+  const approvedCount = applicationRecords.filter(app => app.admissionResult?.status === 'accepted').length;
+  const rejectedCount = applicationRecords.filter(app => app.admissionResult?.status === 'rejected').length;
 
   const pieChartOption = {
     title: { text: 'Trạng thái Hồ sơ', left: 'center' },
@@ -78,10 +87,10 @@ const Dashboard: React.FC = () => {
           <Card><Statistic title="Tổng số trường" value={schools.length} /></Card>
         </Col>
         <Col span={8}>
-          <Card><Statistic title="Tổng số ngành" value={majors.length || 124} /></Card>
+          <Card><Statistic title="Tổng số ngành" value={majors.length} /></Card>
         </Col>
         <Col span={8}>
-          <Card><Statistic title="Tổng hồ sơ nhận" value={applications.length} /></Card>
+          <Card><Statistic title="Tổng hồ sơ nhận" value={applicationRecords.length} /></Card>
         </Col>
       </Row>
 

@@ -6,6 +6,7 @@ import {
   BankOutlined,
   BookOutlined,
   AppstoreOutlined,
+  FileTextOutlined,
   LogoutOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -13,6 +14,7 @@ import {
 // Import các trang
 import Dashboard from './pages/Admin/Dashboard';
 import SchoolManagement from './pages/Admin/School';
+import Applications from './pages/Admin/Applications';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import ForgotPassword from './pages/Auth/ForgotPassword';
@@ -52,6 +54,34 @@ const App: React.FC = () => {
     },
   ];
 
+  const sidebarItems = [
+    {
+      key: '1',
+      icon: <DashboardOutlined />,
+      label: <Link to="/">Dashboard</Link>,
+    },
+    {
+      key: '2',
+      icon: <BankOutlined />,
+      label: <Link to="/schools">Quản lý Trường</Link>,
+    },
+    {
+      key: '3',
+      icon: <BookOutlined />,
+      label: <Link to="/majors">Quản lý Ngành</Link>,
+    },
+    {
+      key: '4',
+      icon: <AppstoreOutlined />,
+      label: <Link to="/admission-blocks">Quản lý Tổ hợp</Link>,
+    },
+    {
+      key: '5',
+      icon: <FileTextOutlined />,
+      label: <Link to="/applications">Duyệt Hồ sơ</Link>,
+    },
+  ];
+
   if (!isAuthenticated) {
     return (
       <Router>
@@ -72,20 +102,7 @@ const App: React.FC = () => {
           <div style={{ height: 32, margin: 16, background: 'rgba(255, 255, 255, 0.2)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {!collapsed && <span style={{ color: 'white', fontWeight: 'bold' }}>ADMISSION CMS</span>}
           </div>
-          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-            <Menu.Item key="1" icon={<DashboardOutlined />}>
-              <Link to="/">Dashboard</Link>
-            </Menu.Item>
-            <Menu.Item key="2" icon={<BankOutlined />}>
-              <Link to="/schools">Quản lý Trường</Link>
-            </Menu.Item>
-            <Menu.Item key="3" icon={<BookOutlined />}>
-              <Link to="/majors">Quản lý Ngành</Link>
-            </Menu.Item>
-            <Menu.Item key="4" icon={<AppstoreOutlined />}>
-              <Link to="/admission-blocks">Quản lý Tổ hợp</Link>
-            </Menu.Item>
-          </Menu>
+          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={sidebarItems} />
         </Sider>
         <Layout className="site-layout">
           <Header style={{ padding: '0 24px', background: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 4px rgba(0,21,41,.08)', zIndex: 1 }}>
@@ -105,6 +122,7 @@ const App: React.FC = () => {
                 <Route path="/schools" element={<SchoolManagement />} />
                 <Route path="/majors" element={<div>Đang phát triển Quản lý Ngành...</div>} />
                 <Route path="/admission-blocks" element={<div>Đang phát triển Quản lý Tổ hợp...</div>} />
+                <Route path="/applications" element={<Applications />} />
                 <Route path="/login" element={<Navigate to="/" replace />} />
                 <Route path="/register" element={<Navigate to="/" replace />} />
               </Routes>
