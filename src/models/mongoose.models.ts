@@ -325,6 +325,18 @@ UserSchema.index({ username: 1 }, { unique: true });
 UserSchema.index({ email: 1 }, { unique: true });
 UserSchema.index({ role: 1 });
 
+// Xóa index idCard_1 nếu nó tồn tại (Sửa lỗi Duplicate Key idCard: null)
+mongoose.connection.on('open', async () => {
+  try {
+    const collections = await mongoose.connection.db.listCollections({ name: 'users' }).toArray();
+    if (collections.length > 0) {
+      await mongoose.connection.db.collection('users').dropIndex('idCard_1').catch(() => {});
+    }
+  } catch (e) {
+    // Bỏ qua nếu index không tồn tại
+  }
+});
+
 export const User = mongoose.model<IUser>('User', UserSchema);
 
 // ============= Documents =============

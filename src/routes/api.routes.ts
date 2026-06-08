@@ -153,8 +153,9 @@ router.post('/auth/register', registerRateLimit, async (req: Request, res: Respo
       }
     });
   } catch (error) {
+    console.error('Registration error:', error);
     await logAudit(undefined, 'register', 'users', 'Lỗi server', 'failure', req.ip, (error as any).message);
-    res.status(500).json({ error: 'Lỗi khi đăng ký' });
+    res.status(500).json({ error: 'Lỗi khi đăng ký', details: (error as any).message });
   }
 });
 

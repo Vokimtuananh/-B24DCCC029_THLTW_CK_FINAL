@@ -33,7 +33,9 @@ const Register: React.FC = () => {
         const errorMessages = Object.values(error.response.data.errors);
         errorMessages.forEach((err: any) => message.error(err));
       } else {
-        message.error(error.response?.data?.error || 'Đăng ký thất bại. Vui lòng kiểm tra lại kết nối server.');
+        const errorMsg = error.response?.data?.error || 'Đăng ký thất bại. Vui lòng kiểm tra lại kết nối server.';
+        const details = error.response?.data?.details ? `: ${error.response.data.details}` : '';
+        message.error(errorMsg + details);
       }
     } finally {
       setLoading(false);
