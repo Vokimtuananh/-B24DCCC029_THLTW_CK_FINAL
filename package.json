@@ -8,6 +8,7 @@
     "dev:server": "tsx watch src/server.ts",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "seed": "tsx seed.ts",
     "preview": "vite preview",
     "server": "node dist/server.js"
   },
