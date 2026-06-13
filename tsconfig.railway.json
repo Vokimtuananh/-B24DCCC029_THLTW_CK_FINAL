@@ -22,8 +22,7 @@
     "src/models/**/*",
     "src/routes/**/*",
     "src/middleware/**/*",
-    "src/utils/**/*",
-    "src/services/**/*"
+    "src/utils/**/*"
   ],
   "exclude": [
     "node_modules",
@@ -32,6 +31,7 @@
     "src/App.tsx",
     "src/main.tsx",
     "src/**/*.test.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "src/services/api.ts"
   ]
 }

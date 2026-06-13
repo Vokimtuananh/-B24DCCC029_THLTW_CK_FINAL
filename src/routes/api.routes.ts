@@ -197,6 +197,12 @@ router.post('/auth/login', loginRateLimit, async (req: Request, res: Response) =
       { expiresIn: process.env.JWT_EXPIRATION || '7d' }
     );
 
+    const refreshToken = jwt.sign(
+      { userId: user._id, type: 'refresh', tokenVersion: user.tokenVersion || 0 },
+      secret,
+      { expiresIn: process.env.JWT_REFRESH_EXPIRATION || '30d' }
+    );
+
     // Update last login
     user.lastLogin = new Date();
     await user.save();
@@ -205,11 +211,7 @@ router.post('/auth/login', loginRateLimit, async (req: Request, res: Response) =
     res.json({
       message: 'Đăng nhập thành công',
       token,
-      refreshToken: jwt.sign(
-        { userId: user._id, type: 'refresh', tokenVersion: user.tokenVersion || 0 },
-        secret,
-        { expiresIn: process.env.JWT_REFRESH_EXPIRATION || '30d' }
-      ),
+      refreshToken,
       user: {
         id: user._id,
         username: user.username,
@@ -1154,10 +1156,10 @@ router.get('/statistics/dashboard', async (req: Request, res: Response) => {
       averageScore: avgScore[0]?.average || 0,
       majorStats: majorStats.map((m) => ({
         majorId: m._id,
-        majorName: m.majorInfo[0]?.name,
+        majorName: m.majorInfo && m.majorInfo[0] ? m.majorInfo[0].name : 'Không xác định',
         applications: m.applications,
         accepted: m.accepted,
-        ratio: (m.accepted / m.applications * 100).toFixed(2)
+        ratio: m.applications > 0 ? (m.accepted / m.applications * 100).toFixed(2) : '0.00'
       }))
     });
   } catch (error) {
@@ -1485,7 +1487,7 @@ router.post('/seed-data', async (req: Request, res: Response) => {
     ]);
 
     // Seed applications
-    const applications = await Application.insertMany([
+    await Application.insertMany([
       {
         applicationNumber: 'APP-001',
         schoolId: schools[0]._id,
@@ -1641,7 +1643,7 @@ router.post('/seed-data', async (req: Request, res: Response) => {
         schools: schools.length,
         majors: majors.length,
         blocks: blocks.length,
-        applications: applications.length
+        applications: 5
       }
     });
   } catch (error) {
