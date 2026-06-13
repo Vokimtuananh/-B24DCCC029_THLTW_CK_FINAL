@@ -10,7 +10,7 @@ import { apiRateLimit } from './middleware/rateLimit';
 
 dotenv.config();
 
-const app = express();
+const app = express(); // Khai báo app NGAY sau import
 
 app.use(cors({
   origin: process.env.CORS_ORIGIN?.split(',') || 'http://localhost:3000',
@@ -29,9 +29,9 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api', apiRoutes);
-
 app.use('/api/files', fileRoutes);
 
+// Error handler
 app.use((error: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Error:', error);
   res.status(error.status || 500).json({
@@ -39,6 +39,7 @@ app.use((error: any, req: express.Request, res: express.Response, next: express.
   });
 });
 
+// 404 handler
 app.use((req: express.Request, res: express.Response) => {
   res.status(404).json({ error: 'Không tìm thấy endpoint' });
 });
@@ -46,12 +47,11 @@ app.use((req: express.Request, res: express.Response) => {
 async function startServer() {
   try {
     await connectDB();
-
     initializeGridFS(mongoose);
 
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-      console.log(`Server chạy tại http://localhost:${PORT}`);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server chạy tại http://localhost:${PORT}`);
       console.log(`API Documentation: http://localhost:${PORT}/api`);
       console.log(`Authentication: Xem API_AUTHENTICATION.md`);
       console.log(`File Upload: POST /api/files/applications/:applicationId/upload`);

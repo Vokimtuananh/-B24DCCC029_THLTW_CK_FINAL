@@ -3,15 +3,18 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  {
   "scripts": {
     "dev": "vite",
     "dev:server": "tsx watch src/server.ts",
     "build": "tsc -b && vite build",
+    "build:server": "tsc -p tsconfig.server.json",
     "lint": "eslint .",
     "seed": "tsx seed.ts",
     "preview": "vite preview",
-    "server": "node dist/server.js"
-  },
+    "start": "node dist/server.js"
+  }
+}
   "dependencies": {
     "@ant-design/icons": "^6.2.5",
     "@reduxjs/toolkit": "^2.12.0",
