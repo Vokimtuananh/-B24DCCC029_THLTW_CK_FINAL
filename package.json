@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
+"scripts": {
     "dev": "vite",
     "dev:server": "tsx watch src/server.ts",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "build:server": "tsc -p tsconfig.server.json",
     "lint": "eslint .",
     "seed": "tsx seed.ts",

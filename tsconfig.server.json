@@ -1,11 +1,20 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "module": "CommonJS",
     "target": "ES2020",
-    "noEmit": false,
-    "moduleResolution": "node"
+    "module": "CommonJS",
+    "lib": ["ES2020"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "allowJs": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false
   },
-  "include": ["src/server.ts", "src/config/**/*", "src/models/**/*", "src/routes/**/*", "src/middleware/**/*", "src/utils/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
 }
