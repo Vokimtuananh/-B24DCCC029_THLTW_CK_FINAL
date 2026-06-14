@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// Sử dụng đúng URL backend của bạn
+const API_BASE_URL = 'https://adminwebbackend.production.up.railway.app/api';
+
 const api = axios.create({
-  baseURL: 'http://localhost:5001/api',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
